@@ -19,7 +19,7 @@ module Redmon
     end
 
     def absolute_url(path='')
-      "#{uri(nil, false)}#{path.sub(%r{^\/+}, '')}"
+      "#{uri(nil, false)}#{Redmon.config.uri.empty? ? '' : '/'}#{path.sub(%r{^\/+}, '')}"
     end
 
   end

@@ -1,7 +1,6 @@
 require 'sinatra/base'
 require 'redmon/helpers'
 require 'haml'
-require 'rack/rewrite'
 
 module Redmon
   class App < Sinatra::Base
@@ -11,17 +10,7 @@ module Redmon
     set :root, File.dirname(__FILE__)
     set :views, Proc.new { File.join(root, "./views") }
 
-    use Rack::Static, {
-      :urls => [/\.css$/, /\.js$/],
-      :root => "#{root}/public",
-      :cache_control => 'public, max-age=3600'
-    }
-
-    unless Redmon.config.uri.nil?
-       use Rack::Rewrite do
-         rewrite "/#{Redmon.config.uri}", '/'
-       end
-    end
+    yes = "#{Redmon.config.uri.empty? ? '' : '/' + Redmon.config.uri}" 
 
     if Redmon.config.secure
       use Rack::Auth::Basic do |username, password|
@@ -29,11 +18,16 @@ module Redmon
       end
     end
 
-    get '/' do
+    get "/#{Redmon.config.uri}" do
       haml :app
     end
 
-    get '/cli' do
+    get "#{yes}/static/*.*" do |path, ext|
+      #"#{File.dirname(__FILE__)}/public/#{path}.#{ext}"
+      send_file("#{File.dirname(__FILE__)}/public/#{path}.#{ext}")
+    end
+
+    get "#{yes}/cli" do
       args = params[:command].split(/ *"(.*?)" *| *'(.*?)' *| /)
       args.reject!(&:empty?)
       @cmd = args.shift.downcase.intern
@@ -51,13 +45,13 @@ module Redmon
       end
     end
 
-    post '/config' do
+    post "#{yes}/config" do
       param = params[:param].intern
       value = params[:value]
       redis.config(:set, param, value) and value
     end
 
-    get '/stats' do
+    get "#{yes}/stats" do
       content_type :json
       redis.zrange(stats_key, count, -1).to_json
     end

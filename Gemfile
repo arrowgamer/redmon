@@ -6,7 +6,6 @@ gem "rake"
 
 gem "sinatra", ">= 1.2.6"
 gem "redis", ">= 2.2.2"
-gem "rack-rewrite"
 gem "eventmachine"
 gem "i18n"
 gem "haml"

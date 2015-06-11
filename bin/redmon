@@ -18,7 +18,7 @@ class RedmonCLI
   option :uri,
     :short       => '-u URI',
     :long        => '--uri URI',
-    :default     => nil,
+    :default     => '',
     :description => "The base URI for the app to run under"
 
   option :port,

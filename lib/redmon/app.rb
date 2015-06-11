@@ -18,7 +18,7 @@ module Redmon
       end
     end
 
-    get "/#{Redmon.config.uri}" do
+    get "/#{Redmon.config.uri}/?" do
       haml :app
     end
 

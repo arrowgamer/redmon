@@ -18,13 +18,13 @@ module Redmon
       end
     end
 
-    get "/#{Redmon.config.uri}/?" do
+    get "/#{Redmon.config.uri}" do
       haml :app
     end
 
-    get "#{yes}/static:file" do |file|
-      filuri.empty
-       Redmon.config.urie
+    get "#{yes}/static/*.*" do |path, ext|
+      #"#{File.dirname(__FILE__)}/public/#{path}.#{ext}"
+      send_file("#{File.dirname(__FILE__)}/public/#{path}.#{ext}")
     end
 
     get "#{yes}/cli" do
@@ -45,13 +45,13 @@ module Redmon
       end
     end
 
-    post '#{yes}/config' do
+    post "#{yes}/config" do
       param = params[:param].intern
       value = params[:value]
       redis.config(:set, param, value) and value
     end
 
-    get '#{yes}/stats' do
+    get "#{yes}/stats" do
       content_type :json
       redis.zrange(stats_key, count, -1).to_json
     end

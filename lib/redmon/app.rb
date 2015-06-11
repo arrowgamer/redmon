@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'redmon/helpers'
 require 'haml'
+require 'rack/rewrite'
 
 module Redmon
   class App < Sinatra::Base
@@ -15,6 +16,12 @@ module Redmon
       :root => "#{root}/public",
       :cache_control => 'public, max-age=3600'
     }
+
+    unless Redmon.config.uri.nil?
+       use Rack::Rewrite do
+         rewrite "/#{Redmon.config.uri}", '/'
+       end
+    end
 
     if Redmon.config.secure
       use Rack::Auth::Basic do |username, password|

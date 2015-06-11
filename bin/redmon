@@ -15,6 +15,12 @@ class RedmonCLI
     :default     => '0.0.0.0',
     :description => "The thin bind address for the app (default: 0.0.0.0)"
 
+  option :uri,
+    :short       => '-u URI',
+    :long        => '--uri URI',
+    :default     => nil,
+    :description => "The base URI for the app to run under"
+
   option :port,
     :short       => '-p PORT',
     :long        => '--port PORT',
